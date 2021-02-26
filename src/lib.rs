@@ -1,6 +1,3 @@
-use std::ffi::CStr;
-use std::os::raw::c_char;
-use cxx::v;
 
 #[cxx::bridge]
 mod ffi {
@@ -13,7 +10,7 @@ mod ffi {
     #[namespace = "wrapper"]
     unsafe extern "C++" {
         include!("snappy-sys/include/wrapper.h");
-        fn compress_raw_into(input: &[u8]);
+        fn compress_raw_into(input: &[u8], output: &mut [u8]);
     }
 
 
@@ -21,8 +18,7 @@ mod ffi {
 
 
 pub fn compress_raw_into(input: &[u8], output: &mut [u8]) {
-    let data = vec![];
-    let src = ffi::compress_raw_into(&data);
+    let _src = ffi::compress_raw_into(&input, output);
 }
 
 
