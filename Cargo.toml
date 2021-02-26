@@ -1,0 +1,13 @@
+[package]
+name = "snappy-sys"
+version = "0.1.0"
+authors = ["milesgranger <miles59923@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+cxx = "^1"
+
+[build-dependencies]
+cxx-build = "^1"
