@@ -5,6 +5,7 @@ mod ffi {
     #[namespace = "snappy"]
     unsafe extern "C++" {
         include!("snappy-sys/include/snappy.h");
+        fn MaxCompressedLength(input_len: usize) -> usize;
     }
 
     #[namespace = "wrapper"]
@@ -15,6 +16,11 @@ mod ffi {
     }
 
 
+}
+
+
+pub fn max_compressed_len(input_len: usize) -> usize {
+    ffi::MaxCompressedLength(input_len)
 }
 
 
@@ -29,7 +35,13 @@ pub fn compress_raw_into(input: &[u8], output: &mut [u8]) -> usize {
 
 #[cfg(test)]
 mod tests {
-    use crate::compress_raw_into;
+    use crate::{compress_raw_into, max_compressed_len};
+
+    #[test]
+    fn test_max_compressed_len() {
+        let size = max_compressed_len(10);
+        assert!(size > 0);
+    }
 
     #[test]
     fn test_compress_raw_into() {
