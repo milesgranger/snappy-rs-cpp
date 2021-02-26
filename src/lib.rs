@@ -1,26 +1,28 @@
 use std::ffi::CStr;
 use std::os::raw::c_char;
+use cxx::v;
 
 #[cxx::bridge]
 mod ffi {
 
     #[namespace = "snappy"]
-
     unsafe extern "C++" {
-        //include!("snappy-sys/include/snappy.h");
-        include!("snappy-sys/include/snappy-sinksource.h");
-
-        type Source;
-        type Sink;
-
-        fn Append(self: &Sink, ptr: &CxxString, len: u64);
-
+        include!("snappy-sys/include/snappy.h");
     }
+
+    #[namespace = "wrapper"]
+    unsafe extern "C++" {
+        include!("snappy-sys/include/wrapper.h");
+        fn compress_raw_into(input: &[u8]);
+    }
+
+
 }
 
 
 pub fn compress_raw_into(input: &[u8], output: &mut [u8]) {
-    let src = ffi::Source();
+    let data = vec![];
+    let src = ffi::compress_raw_into(&data);
 }
 
 
