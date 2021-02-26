@@ -1,3 +1,4 @@
+#![allow(unused_unsafe)]  // IDE doesn't recognize when calls to cxx are actually safe.
 
 #[cxx::bridge]
 mod ffi {
@@ -5,14 +6,14 @@ mod ffi {
     #[namespace = "snappy"]
     unsafe extern "C++" {
         include!("snappy-sys/include/snappy.h");
-        fn MaxCompressedLength(input_len: usize) -> usize;
+        pub fn MaxCompressedLength(input_len: usize) -> usize;
     }
 
     #[namespace = "wrapper"]
     unsafe extern "C++" {
         include!("snappy-sys/wrapper.h");
 
-        fn compress_raw_into(input: &[u8], output: &mut [u8]) -> usize;
+        pub fn compress_raw_into(input: &[u8], output: &mut [u8]) -> usize;
     }
 
 
@@ -20,13 +21,13 @@ mod ffi {
 
 
 pub fn max_compressed_len(input_len: usize) -> usize {
-    ffi::MaxCompressedLength(input_len)
+    unsafe { ffi::MaxCompressedLength(input_len) }
 }
 
 
 pub fn compress_raw_into(input: &[u8], output: &mut [u8]) -> usize {
     if input.len() > 0 {
-        ffi::compress_raw_into(input, output)
+        unsafe { ffi::compress_raw_into(input, output) }
     } else {
         0
     }
