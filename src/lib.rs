@@ -1,37 +1,47 @@
-use std::ffi::CStr;
-use std::os::raw::c_char;
+#![allow(unused_unsafe)]  // IDE doesn't recognize when calls to cxx are actually safe.
 
 #[cxx::bridge]
 mod ffi {
-
-    #[namespace = "snappy"]
-
+    #[namespace = "wrapper"]
     unsafe extern "C++" {
-        //include!("snappy-sys/include/snappy.h");
-        include!("snappy-sys/include/snappy-sinksource.h");
-
-        type Source;
-        type Sink;
-
-        fn Append(self: &Sink, ptr: &CxxString, len: u64);
-
+        include!("snappy-sys/wrapper.h");
+        pub fn max_compressed_length(input_len: usize) -> usize;
+        pub fn compress_raw_into(input: &[u8], output: &mut [u8]) -> usize;
     }
+
+
 }
 
 
-pub fn compress_raw_into(input: &[u8], output: &mut [u8]) {
-    let src = ffi::Source();
+pub fn max_compressed_len(input_len: usize) -> usize {
+    unsafe { ffi::max_compressed_length(input_len) }
+}
+
+
+pub fn compress_raw_into(input: &[u8], output: &mut [u8]) -> usize {
+    if input.len() > 0 {
+        unsafe { ffi::compress_raw_into(input, output) }
+    } else {
+        0
+    }
 }
 
 
 #[cfg(test)]
 mod tests {
-    use crate::compress_raw_into;
+    use crate::{compress_raw_into, max_compressed_len};
+
+    #[test]
+    fn test_max_compressed_len() {
+        let size = max_compressed_len(10);
+        assert!(size > 0);
+    }
 
     #[test]
     fn test_compress_raw_into() {
-        let input = vec![];
-        let mut output = vec![];
-        compress_raw_into(&input, output.as_mut_slice());
+        let input = b"some bytes here".to_vec();
+        let mut output = vec![0; max_compressed_len(input.len())];
+        let n_bytes = compress_raw_into(&input, output.as_mut_slice());
+        println!("{:?}", String::from_utf8(output[..n_bytes].to_vec()));
     }
 }
