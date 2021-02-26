@@ -9,7 +9,7 @@ mod ffi {
 
     #[namespace = "wrapper"]
     unsafe extern "C++" {
-        include!("snappy-sys/include/wrapper.h");
+        include!("snappy-sys/wrapper.h");
 
         fn compress_raw_into(input: &[u8], output: &mut [u8]) -> usize;
     }
