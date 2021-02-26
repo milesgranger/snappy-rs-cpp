@@ -18,7 +18,7 @@ mod ffi {
 
 
 pub fn compress_raw_into(input: &[u8], output: &mut [u8]) {
-    let _src = ffi::compress_raw_into(&input, output);
+    let _src = ffi::compress_raw_into(input, output);
 }
 
 
@@ -28,8 +28,9 @@ mod tests {
 
     #[test]
     fn test_compress_raw_into() {
-        let input = vec![];
-        let mut output = vec![];
+        let input = b"some bytes here".to_vec();
+        let mut output = vec![0;500];
         compress_raw_into(&input, output.as_mut_slice());
+        println!("{:?}", String::from_utf8_lossy(&output));
     }
 }
