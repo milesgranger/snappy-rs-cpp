@@ -12,11 +12,8 @@ mod ffi {
     #[namespace = "wrapper"]
     unsafe extern "C++" {
         include!("snappy-sys/wrapper.h");
-
         pub fn compress_raw_into(input: &[u8], output: &mut [u8]) -> usize;
     }
-
-
 }
 
 

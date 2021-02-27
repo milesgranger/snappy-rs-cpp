@@ -1,6 +1,5 @@
 
 #include <snappy.h>
-#include <snappy-sinksource.h>
 #include <rust/cxx.h>
 
 namespace wrapper {
